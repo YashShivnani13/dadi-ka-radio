@@ -1,6 +1,7 @@
-# 📻 Dadi Ka Radio
 
 <div align="center">
+
+# 📻 Dadi Ka Radio
 
 ### पुराने गीत • पुरानी यादें • हमेशा आपके साथ
 
@@ -106,69 +107,100 @@ dadi-ka-radio/
 
 ## 🚀 Getting Started
 
-Follow these steps to run Dadi Ka Radio locally.
+Follow these steps to run **Dadi Ka Radio** locally.
 
-Prerequisites
+### Prerequisites
 
-Make sure you have installed:
+Make sure you have the following installed:
 
-Node.js
-npm
-Git
+* [Node.js](https://nodejs.org/)
+* npm
+* Git
 
-You can check your installations with:
+Verify your installations:
 
+```bash
 node --version
 npm --version
 git --version
-1. Clone the repository
-git clone https://github.com/YashShivnani13/dadi-ka-radio.git
-2. Open the project
-cd dadi-ka-radio
-3. Install dependencies
-npm install
-4. Generate the playlist
+```
 
-The project includes an automatic playlist generator.
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/YashShivnani13/dadi-ka-radio.git
+```
+
+### 2. Navigate to the Project
+
+```bash
+cd dadi-ka-radio
+```
+
+### 3. Install Dependencies
+
+```bash
+npm install
+```
+
+### 4. Generate the Playlist
+
+Dadi Ka Radio includes an automatic playlist generator that scans the music directory and creates the playlist data used by the application.
 
 Run:
 
+```bash
 npm run generate:playlist
+```
 
-This scans the music directory and generates the playlist data used by the application.
+You don't need to manually maintain the playlist whenever new songs are added.
 
-5. Start the development server
+### 5. Start the Development Server
+
+```bash
 npm run dev
+```
 
-Open the application in your browser:
+Open the application at:
 
+```text
 http://localhost:3000
-🎶 Adding New Songs
+```
 
-Adding a new song is simple.
+---
 
-Place the .mp3 file inside the project's music folder:
+## 🎶 Adding New Songs
 
+Adding songs to Dadi Ka Radio is simple.
+
+Place your `.mp3` files inside:
+
+```text
 public/
 └── music/
     ├── song-1.mp3
     ├── song-2.mp3
     ├── song-3.mp3
     └── new-song.mp3
+```
 
 Then regenerate the playlist:
 
+```bash
 npm run generate:playlist
+```
 
-Start the application again if necessary:
+Start the development server:
 
+```bash
 npm run dev
+```
 
-That's it.
+That's it. The new song will automatically be included in the playlist.
 
-You don't need to manually edit the playlist every time you add a song.
+### Quick Workflow
 
-Quick workflow
+```text
 Add MP3
    ↓
 npm run generate:playlist
@@ -176,78 +208,101 @@ npm run generate:playlist
 npm run build
    ↓
 Deploy
+```
+
+---
+
 ## 🧪 Production Build
 
 Before deploying, create a production build:
 
+```bash
 npm run build
+```
 
 If the build completes successfully, start the production server:
 
+```bash
 npm run start
+```
 
-Then visit:
+The production version will be available at:
 
+```text
 http://localhost:3000
+```
 
-This lets you test the production version locally before deployment.
+This allows you to verify the production build locally before deployment.
+
+---
 
 ## 🎨 Design Philosophy
 
-Dadi Ka Radio was built around one simple idea:
+**Dadi Ka Radio** was built around one simple idea:
 
-What if listening to an old song felt like finding an old memory?
+> *What if listening to an old song felt like finding an old memory?*
 
-The visual design takes inspiration from:
+The visual identity takes inspiration from:
 
-📻 Vintage radios
-🎞️ Old Bollywood
-🏘️ Indian neighbourhoods
-🌅 Golden-hour evenings
-📼 Cassette and record shops
-👵 Childhood memories
-🎵 Old Hindi melodies
+* 📻 Vintage radios
+* 🎞️ Old Bollywood cinema
+* 🏘️ Indian neighbourhoods
+* 🌅 Golden-hour evenings
+* 📼 Cassette and record shops
+* 👵 Childhood memories
+* 🎵 Old Hindi melodies
 
 The goal wasn't to build another Spotify clone.
 
-It was to build a feeling.
+**It was to build a feeling.**
+
+A warm, nostalgic experience that makes old songs feel like memories rather than just tracks in a playlist.
+
+---
 
 ## 📱 Responsive Design
 
-The interface is designed to work across:
+Dadi Ka Radio is designed to provide a consistent experience across different screen sizes:
 
-💻 Desktop
-🖥️ Large screens
-📱 Mobile
-📲 Tablets
+* 💻 Desktop
+* 🖥️ Large screens
+* 📱 Mobile
+* 📲 Tablets
 
-The music player automatically adapts to different screen sizes.
+The music player automatically adapts its layout and controls based on the device's screen size.
 
-🔗 Links
-Instagram
+---
 
-https://www.instagram.com/flosy.global/
+## 🔗 Links
 
-GitHub
+* **Instagram:** https://www.instagram.com/flosy.global/
+* **GitHub:** https://github.com/YashShivnani13/dadi-ka-radio
 
-https://github.com/YashShivnani13/dadi-ka-radio
+---
 
 ## ⚠️ Music & Copyright
 
-This project is a personal and portfolio experiment.
+Dadi Ka Radio is a personal and portfolio project created for educational and experimental purposes.
 
-## 
+The application and its code are intended to demonstrate web development, music-player functionality, playlist automation, and nostalgic UI/UX design.
 
+Please ensure that you have the appropriate rights or permissions for any music distributed with your own deployment of the project.
+
+---
 
 <div align="center">
-📻 Dadi Ka Radio
-पुराने गीत • पुरानी यादें • हमेशा आपके साथ
+
+# 📻 Dadi Ka Radio
+
+### पुराने गीत • पुरानी यादें • हमेशा आपके साथ
+
 <br>
 
-Developed by Yash Shivnani
+**Developed by Yash Shivnani**
 
-<br>
+</div>
 
+<div align="center">
 ⭐ If you like the project, consider giving the repository a star.
 
 </div> 

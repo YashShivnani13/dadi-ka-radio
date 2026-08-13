@@ -37,18 +37,15 @@ export default function MusicPlayer() {
 
     audio.src = song.audio;
     audio.load();
-
     audio.currentTime = 0;
 
     setCurrentTime(0);
     setDuration(0);
 
     if (isPlaying) {
-      audio
-        .play()
-        .catch(() => {
-          setIsPlaying(false);
-        });
+      audio.play().catch(() => {
+        setIsPlaying(false);
+      });
     }
   }, [songIndex]);
 
@@ -191,11 +188,11 @@ export default function MusicPlayer() {
 
   return (
     <div
-      className="player-enter fixed inset-x-0 bottom-0 z-20 flex w-full justify-center px-3 sm:px-4"
+      className="fixed bottom-4 left-1/2 z-20 w-[min(820px,calc(100%-24px))] -translate-x-1/2"
       style={{
         paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
-    }}
-  >
+      }}
+    >
       <DesktopPlayer
         song={song}
         isPlaying={isPlaying}

@@ -6,188 +6,200 @@ import DesktopPlayer from "./DesktopPlayer";
 import MobilePlayer from "./MobilePlayer";
 
 export default function MusicPlayer() {
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
   const [songIndex, setSongIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const song = playlist[songIndex];
 
-  const playCurrentSong = useCallback(async () => {
+  /*
+   * Create the audio element once.
+   */
+  useEffect(() => {
+    const audio = new Audio();
+    audio.preload = "auto";
+    audioRef.current = audio;
+
+    return () => {
+      audio.pause();
+      audio.src = "";
+      audioRef.current = null;
+    };
+  }, []);
+
+  /*
+   * Load the current song whenever songIndex changes.
+   */
+  useEffect(() => {
+    const audio = audioRef.current;
+
+    if (!audio || !song) return;
+
+    audio.src = song.audio;
+    audio.currentTime = 0;
+    setCurrentTime(0);
+    setDuration(0);
+
+    if (isPlaying) {
+      audio
+        .play()
+        .catch(() => {
+          setIsPlaying(false);
+        });
+    }
+  }, [songIndex]);
+
+  /*
+   * Keep React state synchronized with the audio element.
+   */
+  useEffect(() => {
     const audio = audioRef.current;
 
     if (!audio) return;
 
-    try {
-      await audio.play();
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const handleLoadedMetadata = () => {
+      if (Number.isFinite(audio.duration)) {
+        setDuration(audio.duration);
+      }
+    };
+
+    const handleEnded = () => {
+      setSongIndex((current) => (current + 1) % playlist.length);
+      setCurrentTime(0);
+    };
+
+    const handlePlay = () => {
       setIsPlaying(true);
-    } catch (error) {
-      console.error("Unable to play audio:", error);
+    };
+
+    const handlePause = () => {
       setIsPlaying(false);
-    }
+    };
+
+    audio.addEventListener("timeupdate", handleTimeUpdate);
+    audio.addEventListener("loadedmetadata", handleLoadedMetadata);
+    audio.addEventListener("ended", handleEnded);
+    audio.addEventListener("play", handlePlay);
+    audio.addEventListener("pause", handlePause);
+
+    return () => {
+      audio.removeEventListener("timeupdate", handleTimeUpdate);
+      audio.removeEventListener("loadedmetadata", handleLoadedMetadata);
+      audio.removeEventListener("ended", handleEnded);
+      audio.removeEventListener("play", handlePlay);
+      audio.removeEventListener("pause", handlePause);
+    };
   }, []);
 
-  const handleTogglePlay = useCallback(async () => {
+  /*
+   * Play / pause.
+   */
+  const handleTogglePlay = useCallback(() => {
     const audio = audioRef.current;
 
     if (!audio) return;
 
     if (audio.paused) {
-      await playCurrentSong();
+      audio
+        .play()
+        .then(() => {
+          setIsPlaying(true);
+        })
+        .catch(() => {
+          setIsPlaying(false);
+        });
     } else {
       audio.pause();
+      setIsPlaying(false);
     }
-  }, [playCurrentSong]);
-
-  const handleNext = useCallback(() => {
-    setSongIndex((index) => (index + 1) % playlist.length);
-    setCurrentTime(0);
-    setDuration(0);
   }, []);
 
+  /*
+   * Previous song.
+   */
   const handlePrev = useCallback(() => {
-    setSongIndex(
-      (index) => (index - 1 + playlist.length) % playlist.length,
-    );
-
-    setCurrentTime(0);
-    setDuration(0);
-  }, []);
-
-  const handleSeek = useCallback(
-    (time: number) => {
-      const audio = audioRef.current;
-
-      if (!audio) return;
-
-      const maxTime = Number.isFinite(audio.duration)
-        ? audio.duration
-        : duration;
-
-      const safeTime = Math.max(0, Math.min(time, maxTime));
-
-      audio.currentTime = safeTime;
-      setCurrentTime(safeTime);
-    },
-    [duration],
-  );
-
-  const handleLoadedMetadata = useCallback(() => {
     const audio = audioRef.current;
 
-    if (!audio) return;
+    setSongIndex((current) => {
+      return (current - 1 + playlist.length) % playlist.length;
+    });
 
-    if (Number.isFinite(audio.duration)) {
-      setDuration(audio.duration);
+    setCurrentTime(0);
+
+    if (audio) {
+      audio.currentTime = 0;
     }
   }, []);
 
-  const handleTimeUpdate = useCallback(() => {
-    const audio = audioRef.current;
+  /*
+   * Next song.
+   */
+  const handleNext = useCallback(() => {
+    setSongIndex((current) => {
+      return (current + 1) % playlist.length;
+    });
 
-    if (!audio) return;
-
-    setCurrentTime(audio.currentTime);
-  }, []);
-
-  const handlePlay = useCallback(() => {
-    setIsPlaying(true);
-  }, []);
-
-  const handlePause = useCallback(() => {
-    setIsPlaying(false);
-  }, []);
-
-  const handleEnded = useCallback(() => {
     setCurrentTime(0);
-
-    setSongIndex((index) => (index + 1) % playlist.length);
   }, []);
 
-  useEffect(() => {
+  /*
+   * Seek.
+   */
+  const handleSeek = useCallback((time: number) => {
     const audio = audioRef.current;
 
     if (!audio) return;
 
-    audio.load();
+    const maxDuration = Number.isFinite(audio.duration)
+      ? audio.duration
+      : duration;
 
-    if (isPlaying) {
-      audio.play().catch(() => {
-        setIsPlaying(false);
-      });
-    }
-  }, [songIndex]);
+    const nextTime = Math.min(Math.max(time, 0), maxDuration || 0);
 
-  useEffect(() => {
-    const audio = audioRef.current;
+    audio.currentTime = nextTime;
+    setCurrentTime(nextTime);
+  }, [duration]);
 
-    if (!audio) return;
-
-    audio.volume = 1;
-
-    return () => {
-      audio.pause();
-    };
-  }, []);
-
-  if (!song) return null;
+  if (!song) {
+    return null;
+  }
 
   return (
-    <>
-      {/* Actual audio element */}
-      <audio
-        ref={audioRef}
-        src={song.audio}
-        preload="auto"
-        onLoadedMetadata={handleLoadedMetadata}
-        onTimeUpdate={handleTimeUpdate}
-        onPlay={handlePlay}
-        onPause={handlePause}
-        onEnded={handleEnded}
+    <div
+      className="player-enter fixed bottom-0 left-1/2 z-20 w-full -translate-x-1/2 px-3 sm:px-4"
+      style={{
+        maxWidth: "820px",
+        paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
+      }}
+    >
+      <DesktopPlayer
+        song={song}
+        isPlaying={isPlaying}
+        currentTime={currentTime}
+        duration={duration}
+        onSeek={handleSeek}
+        onTogglePlay={handleTogglePlay}
+        onPrev={handlePrev}
+        onNext={handleNext}
       />
 
-      {/* 
-        CENTERED PLAYER
-        Do NOT add player-enter here.
-      */}
-      <div
-        className="
-          fixed
-          bottom-6
-          left-1/2
-          z-20
-          w-[calc(100%-24px)]
-          max-w-[800px]
-          -translate-x-1/2
-        "
-        style={{
-          paddingBottom: "max(1rem, env(safe-area-inset-bottom))",
-        }}
-      >
-        <DesktopPlayer
-          song={song}
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          duration={duration}
-          onSeek={handleSeek}
-          onTogglePlay={handleTogglePlay}
-          onPrev={handlePrev}
-          onNext={handleNext}
-        />
-
-        <MobilePlayer
-          song={song}
-          isPlaying={isPlaying}
-          currentTime={currentTime}
-          duration={duration}
-          onSeek={handleSeek}
-          onTogglePlay={handleTogglePlay}
-          onPrev={handlePrev}
-          onNext={handleNext}
-        />
-      </div>
-    </>
+      <MobilePlayer
+        song={song}
+        isPlaying={isPlaying}
+        currentTime={currentTime}
+        duration={duration}
+        onSeek={handleSeek}
+        onTogglePlay={handleTogglePlay}
+        onPrev={handlePrev}
+        onNext={handleNext}
+      />
+    </div>
   );
 }

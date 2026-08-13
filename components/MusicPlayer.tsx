@@ -15,11 +15,10 @@ export default function MusicPlayer() {
 
   const song = playlist[songIndex];
 
-  /*
-   * Create the audio element once.
-   */
+  // Create the audio element once.
   useEffect(() => {
     const audio = new Audio();
+
     audio.preload = "auto";
     audioRef.current = audio;
 
@@ -30,16 +29,17 @@ export default function MusicPlayer() {
     };
   }, []);
 
-  /*
-   * Load the current song whenever songIndex changes.
-   */
+  // Load the selected song.
   useEffect(() => {
     const audio = audioRef.current;
 
     if (!audio || !song) return;
 
     audio.src = song.audio;
+    audio.load();
+
     audio.currentTime = 0;
+
     setCurrentTime(0);
     setDuration(0);
 
@@ -52,9 +52,7 @@ export default function MusicPlayer() {
     }
   }, [songIndex]);
 
-  /*
-   * Keep React state synchronized with the audio element.
-   */
+  // Keep UI synchronized with the actual audio.
   useEffect(() => {
     const audio = audioRef.current;
 
@@ -71,8 +69,11 @@ export default function MusicPlayer() {
     };
 
     const handleEnded = () => {
-      setSongIndex((current) => (current + 1) % playlist.length);
       setCurrentTime(0);
+
+      setSongIndex((current) => {
+        return (current + 1) % playlist.length;
+      });
     };
 
     const handlePlay = () => {
@@ -83,11 +84,20 @@ export default function MusicPlayer() {
       setIsPlaying(false);
     };
 
+    const handleError = () => {
+      console.error("Unable to play:", song.audio);
+
+      setSongIndex((current) => {
+        return (current + 1) % playlist.length;
+      });
+    };
+
     audio.addEventListener("timeupdate", handleTimeUpdate);
     audio.addEventListener("loadedmetadata", handleLoadedMetadata);
     audio.addEventListener("ended", handleEnded);
     audio.addEventListener("play", handlePlay);
     audio.addEventListener("pause", handlePause);
+    audio.addEventListener("error", handleError);
 
     return () => {
       audio.removeEventListener("timeupdate", handleTimeUpdate);
@@ -95,12 +105,11 @@ export default function MusicPlayer() {
       audio.removeEventListener("ended", handleEnded);
       audio.removeEventListener("play", handlePlay);
       audio.removeEventListener("pause", handlePause);
+      audio.removeEventListener("error", handleError);
     };
-  }, []);
+  }, [song.audio]);
 
-  /*
-   * Play / pause.
-   */
+  // Play / pause.
   const handleTogglePlay = useCallback(() => {
     const audio = audioRef.current;
 
@@ -112,7 +121,8 @@ export default function MusicPlayer() {
         .then(() => {
           setIsPlaying(true);
         })
-        .catch(() => {
+        .catch((error) => {
+          console.error("Playback failed:", error);
           setIsPlaying(false);
         });
     } else {
@@ -121,51 +131,59 @@ export default function MusicPlayer() {
     }
   }, []);
 
-  /*
-   * Previous song.
-   */
+  // Previous song.
   const handlePrev = useCallback(() => {
     const audio = audioRef.current;
+
+    if (audio) {
+      audio.pause();
+    }
+
+    setIsPlaying(false);
+    setCurrentTime(0);
 
     setSongIndex((current) => {
       return (current - 1 + playlist.length) % playlist.length;
     });
-
-    setCurrentTime(0);
-
-    if (audio) {
-      audio.currentTime = 0;
-    }
   }, []);
 
-  /*
-   * Next song.
-   */
+  // Next song.
   const handleNext = useCallback(() => {
+    const audio = audioRef.current;
+
+    if (audio) {
+      audio.pause();
+    }
+
+    setIsPlaying(false);
+    setCurrentTime(0);
+
     setSongIndex((current) => {
       return (current + 1) % playlist.length;
     });
-
-    setCurrentTime(0);
   }, []);
 
-  /*
-   * Seek.
-   */
-  const handleSeek = useCallback((time: number) => {
-    const audio = audioRef.current;
+  // Seek.
+  const handleSeek = useCallback(
+    (time: number) => {
+      const audio = audioRef.current;
 
-    if (!audio) return;
+      if (!audio) return;
 
-    const maxDuration = Number.isFinite(audio.duration)
-      ? audio.duration
-      : duration;
+      const maxDuration = Number.isFinite(audio.duration)
+        ? audio.duration
+        : duration;
 
-    const nextTime = Math.min(Math.max(time, 0), maxDuration || 0);
+      const nextTime = Math.min(
+        Math.max(time, 0),
+        maxDuration || 0
+      );
 
-    audio.currentTime = nextTime;
-    setCurrentTime(nextTime);
-  }, [duration]);
+      audio.currentTime = nextTime;
+      setCurrentTime(nextTime);
+    },
+    [duration]
+  );
 
   if (!song) {
     return null;

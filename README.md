@@ -29,13 +29,8 @@ The interface combines a vintage Indian neighbourhood aesthetic with a modern, m
 
 ## 🖼️ Preview
 
-<p align="center">
-  <img 
-    src="./public/dashboard-preview.png" 
-    alt="Dadi Ka Radio Dashboard"
-    width="100%"
-  />
-</p>
+<img width="1919" height="971" alt="Screenshot 2026-08-13 151606" src="https://github.com/user-attachments/assets/9ac24716-5a29-4162-a56f-012a1f56cf6c" />
+
 
 ---
 
@@ -107,7 +102,9 @@ dadi-ka-radio/
 ├── postcss.config.mjs
 ├── tsconfig.json
 └── README.md
-🚀 Getting Started
+```
+
+## 🚀 Getting Started
 
 Follow these steps to run Dadi Ka Radio locally.
 
@@ -179,7 +176,7 @@ npm run generate:playlist
 npm run build
    ↓
 Deploy
-🧪 Production Build
+## 🧪 Production Build
 
 Before deploying, create a production build:
 
@@ -195,7 +192,7 @@ http://localhost:3000
 
 This lets you test the production version locally before deployment.
 
-🎨 Design Philosophy
+## 🎨 Design Philosophy
 
 Dadi Ka Radio was built around one simple idea:
 
@@ -215,7 +212,7 @@ The goal wasn't to build another Spotify clone.
 
 It was to build a feeling.
 
-📱 Responsive Design
+## 📱 Responsive Design
 
 The interface is designed to work across:
 
@@ -235,13 +232,12 @@ GitHub
 
 https://github.com/YashShivnani13/dadi-ka-radio
 
-⚠️ Music & Copyright
+## ⚠️ Music & Copyright
 
 This project is a personal and portfolio experiment.
 
-Only use audio files that you have the appropriate rights or permission to distribute and stream through the website.
+## 
 
-Do not redistribute copyrighted music without the necessary permissions.
 
 <div align="center">
 📻 Dadi Ka Radio
@@ -254,4 +250,4 @@ Developed by Yash Shivnani
 
 ⭐ If you like the project, consider giving the repository a star.
 
-</div> ```
+</div> 

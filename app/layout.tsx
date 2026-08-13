@@ -23,6 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full">
       <head>
+        {/* Google Search Console Verification */}
+        <meta
+          name="google-site-verification"
+          content="uRGYOaBevdr1KO---Z1vUxEPjSCLktOuSBpkUk7BUlk"
+        />
+
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -34,6 +40,7 @@ export default function RootLayout({
           rel="stylesheet"
         />
       </head>
+
       <body className="h-full antialiased">{children}</body>
     </html>
   );

@@ -1,4 +1,4 @@
-import type { Song } from "@/data/playlists";
+import type { Song } from "@/data/generatedPlaylist";
 import Vinyl from "./Vinyl";
 import ProgressBar from "./ProgressBar";
 import TransportControls from "./TransportControls";
@@ -34,13 +34,6 @@ export default function DesktopPlayer({
         <p className="truncate text-[12.5px] font-medium leading-tight text-warm-white/65">
           {song.artist}
         </p>
-
-        {song.film && (
-          <p className="truncate text-[11px] leading-tight text-warm-white/40">
-            {song.film}
-            {song.year ? ` • ${song.year}` : ""}
-          </p>
-        )}
       </div>
 
       <div className="h-10 w-px shrink-0 bg-warm-white/10" />
